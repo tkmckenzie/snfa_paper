@@ -1,0 +1,255 @@
+\documentclass[twocolumn]{article}
+
+
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{natbib}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+\newcommand{\img}[1]{\includegraphics[width=3in]{#1}}
+\newcommand{\ep}{\varepsilon}
+
+\begin{document}
+	
+\twocolumn[{
+	\centering
+	\LARGE Semi-Parametric Estimation of Allocative Inefficiency Using Smooth Non-Parametric Frontier Analysis\\[1.5em]
+	\large Taylor McKenzie\\[1.5em]
+}]
+
+\begin{abstract}
+	Data envelopment analysis (DEA) has been widely applied to study the efficiency of firms, efficiency of various stages in production, and how productivity, efficiency, and technology change through time, among many other applications. DEA is a non-parametric analysis, giving it a major advantage over parametric methods that require specification of a specific production function or rely on (usually) low-order Taylor-series approximations, which may not fully capture interactions between inputs. However, DEA produces production frontiers that are not everywhere-differentiable, making it impossible to calculate marginal input productivities needed to directly analyze allocative efficiency of firms. Alternative DEA-based methods that estimate cost or revenue frontiers to study allocative inefficiency assume firms are price-takers and are therefore inappropriate for non-competitive markets. This research investigates smooth non-parametric frontier analysis, a smooth analogue of DEA that permits calculation of marginal input productivities, and applies them to models of allocative inefficiency while making no assumption on the nature of competition. An empirical methodology is developed and applied to U.S. freight rail firms to determine if overcapitalization is prevalent in the rate-regulated industry, as predicted by the Averch-Johnson hypothesis.
+\end{abstract}
+
+\section{Literature Review}
+
+\subsection{Technical and Allocative Efficiency}
+
+%Brief recap on what technical and allocative inefficiency are and methods used to estimate (and what is necessary for their estimation). Highlight stochastic frontier modeling as one method of estimating both types of inefficiency, and with DEA, which has been used to estimate technical efficiency, technical progress, and productivity growth, and is discussed further in the following subsection.
+
+Technical inefficiency is defined as the deviation between observed and maximum-possible output, measuring the technical transformation of inputs into outputs. Allocative inefficiency is defined as the deviation between observed and profit-maximizing allocations of inputs, capturing the effectiveness with which firms choose input quantities \citep{AignerLovellSchmidt}. The two concepts are distinct: A firm that is technically efficient may not exhibit allocative efficiency, and vice versa. As an illustration, consider \cref{fig:efficiencyExample}. In this plot, the black curve represents the production possibilities frontier, and the slope of the red line is the ratio of output to input price, $p_Y/p_X$. Since point $A$ is below the frontier, it is not technically efficient. Point $B$ is technically efficient because it lies on the frontier, but not allocatively efficient since the marginal productivity of $X$ does not equal the price ratio at that point. Point $C$ is both technically and allocatively efficient.
+
+Technical efficiency has been estimated and analyzed using a variety of methods. Data envelopment analysis (DEA), described in greater detail in the following subsection, is a non-parametric method that uses linear programming techniques to find a production frontier that envelops the data, which can then be used to infer inefficiency of individual firms. Stochastic frontier analysis (SFA), a parametric method that requires specification of the form of the production function, estimates inefficiency by assuming deviations from the unobserved frontier follow a one-sided distribution (typically half-normal or log-normal) and using data to fit parameters of that distribution. \cite{AignerLovellSchmidt} describe methods to separately identify technical inefficiency from measurement error using stochastic frontier models.
+
+%Need to update this, DEA used for allocative inefficiency too using revenue as output. However, this method assumes prices are fixed/firms are price-takers, not applicable to non-competitive markets.
+Allocative inefficiency has been studied using both SFA and DEA. Prior to the widespread use of DEA, \cite{Farrell} described methods of evaluating the price efficiency (i.e., allocative efficiency) of firms using production frontiers, under the assumption that firms are price-takers. \cite{Fare1985} later applied DEA to this approach in a seminal work, using revenue as the output in the DEA model to quantify allocative inefficiency. Again, this approach relies on the assumption that firms are price-takers and is therefore inappropriate for non-competitive markets. Should this methodology be applied to firms that are not price-takers, estimation of the cost frontier necessarily omits a key (unobservable) input, \textit{market power}, and can therefore produce biased estimates of allocative inefficiency.
+
+In a seminal work, \cite{LovellSchmidt} use a stochastic frontier model to study allocative inefficiency. The authors begin with a first-order approximation of the log-production function (i.e., log-log form). Using this form allows the first-order conditions for profit maximization to be expressed in the closed-form
+\begin{equation}
+	\label{eqn:closedForm}
+	\frac{x^1}{x^j} = \frac{w_j\alpha_1}{w_1\alpha_j},
+\end{equation}
+where $x^1$ and $x^j$ are the quantities of capital and input $j$ used, respectively, $w_1$ and $w_j$ are the factor prices of capital and input $j$, respectively, and $\alpha_1$ and $\alpha_j$ are elasticities of output with respect to capital and input $j$, respectively. The authors assume that \cref{eqn:closedForm} may not hold empirically. Instead, the authors assume
+\begin{equation}
+	\ln(x^1) - \ln(x^j) = \ln\left(\frac{w_j\alpha_1}{w_1\alpha_j}\right) + \ep_j,
+\end{equation}
+where $\ep = (\ep_2, ..., \ep_M)$ follows a multivariate normal distribution with mean $\mu$ and covariance $\Sigma$. Under the assumption of a monotonically increasing, concave production function, a positive value of $\mu_j$ indicates overcapitalization relative to input $j$; that is, the firm would be able to realize greater profits by decreasing its capital utilization relative to its utilization of input $j$. Unlike DEA-based analyses of allocative inefficiency, this SFA method makes no assumptions on the nature of competition. Instead, it relies on direct estimation of the real production function to obtain marginal rates of transformation, then compares those to observed prices, making no assumption about how those prices were realized. However, SFA does require the researcher to choose a functional form for the production function, making the process prone to misspecfication error. If the selected functional form does not fully capture interactions between inputs, estimates of technical and allocative inefficiency could be biased.
+
+Studies of allocative inefficiency complement studies of technical inefficiency, each offering a valuable and varied perspective on production. Importantly, many hypotheses have been made relating inefficiency to competition. For example, \cite{AverchJohnson} predicted that firms in rate-regulated industries would tend to overcapitalize to relax profit constraints imposed by regulators. The empirical analysis presented in this paper will test this hypothesis in the rate-regulated U.S. freight rail industry.
+
+\begin{figure}
+	\img{R/efficiencyExample.pdf}
+	\caption{Technical and Allocative Efficiency}
+	\label{fig:efficiencyExample}
+\end{figure}
+
+\subsection{Data Envelopment Analysis}
+
+Data envelopment analysis (DEA) is a non-parametric technique that has been extensively used to analyze productivity and efficiency. The analysis involves solving a linear programming problem that generates a production possibilities frontier that envelops the data and using those results to estimate inefficiency. Specifically, output-oriented efficiency for firm $i$ is defined as
+
+\begin{equation}
+\phi(x_i, y_i) = \inf\{\theta|(x_i, y_i / \theta)\in S\},
+\end{equation}
+where $S$ is the set of possible production plans \citep{Shepherd}. Under the assumption of constant returns-to-scale, output-oriented efficiency can be found for firm $i=0$ using DEA by solving the linear programming problem
+\begin{align}
+\nonumber
+\max \phi\\
+\nonumber
+\mbox{subject to}\\
+\nonumber
+\sum_{i=1}^n \lambda_i x_i^j \leq x_0^j \mbox{\ \ \ \ }j=1,...,M\\
+\nonumber
+\sum_{i=1}^n \lambda_i y_i^k \geq \phi y_0^k \mbox{\ \ \ \ }k=1,...,K\\
+\nonumber
+\lambda_i \geq 0 \mbox{\ \ \ \ }i=1,...,N.
+\end{align}
+
+\noindent
+In this system, $m$ indexes inputs, $k$ indexes outputs, and $i$ indexes firms. The efficiency of firm $i=0$ (i.e., the ratio of observed to maximum output, given values for inputs) is given by $\phi^{-1}$. Alternative specifications for returns-to-scale can be used by imposing additional constraints on $\lambda$; for example, a variable returns-to-scale model can be used by constraining $\sum_i \lambda_i = 1$. Example input and output data and estimated DEA frontiers (with constant and variable returns-to-scale) using capital stock as the sole input and GDP as the output is shown in \cref{fig:DEA-plot}.\footnote{This simple example is only meant to illustrate techniques and contrast different types of models. For a full empirical application, see the following section.} Further, a plot of marginal input productivity (i.e., the slope of the production frontier) is shown in \cref{fig:DEA-grad-plot}.
+
+\begin{figure}
+	\img{R/dea-plot.pdf}
+	\caption{DEA Model Estimates}
+	\label{fig:DEA-plot}
+\end{figure}
+
+DEA models have been used to identify a number of production characteristics. Notably, \cite{Fare} used DEA methods to separately identify productivity growth, technical progress and efficiency changes. Specifically, the authors found that efficiency change can be expressed as
+\begin{equation}
+\frac{\phi_{t+1}(x_{i,t+1}, y_{i,t+1})}{\phi_{t}(x_{i,t}, y_{i,t})}
+\end{equation}
+and technical change can be written as
+\begin{equation}
+\left[\left(\frac{\phi_t(x_{i,t+1}, y_{i,t+1})}{\phi_{t+1}(x_{i,t+1}, y_{i,t+1}}\right)\left(\frac{\phi_t(x_{i,t}, y_{i,t})}{\phi_{t+1}(x_{i,t}, y_{i,t})}\right)\right]^{1/2}.
+\end{equation}
+In these expressions, $\phi_t(x_{i,s}, y_{i,s})$ is the efficiency of firm $i$'s production plan in year $s$ relative to the production possibilities frontier in year $t$. Further, the total change in productivity can be expressed as the product of efficiency and technical changes.
+
+\begin{figure}
+	\img{R/dea-grad-plot.pdf}
+	\caption{DEA Slope Estimates}
+	\label{fig:DEA-grad-plot}
+\end{figure}
+
+As seen in \cref{fig:DEA-plot}, DEA produces a piecewise-linear production possibilities frontier. While this characteristic is not problematic for many analyses, it does prevent direct estimation of allocative inefficiency from marginal rates of transformation because marginal input productivities are not defined at kinks in the frontier, as shown in \cref{fig:DEA-grad-plot}. For this reason, researchers have turned toward using costs or revenue in DEA analyses to estimate allocative inefficiency. However, as previously discussed, this approach assumes that firms are price-takers, and applying this method to non-competitive markets can produce biased estimates of allocative inefficiency. Instead, a smooth analogue of DEA can be used to obtain estimates of allocative inefficiency in a non-competitive environment in a approach similar to that of SFA, where marginal rates of transformation of real inputs to real outputs are estimated and compared to observed prices. Smooth non-parametric frontier analysis (SNFA) is one such method and is discussed further in the following subsection.
+
+\subsection{Smooth Non-Parametric Frontier Analysis}
+
+Smooth non-parametric frontier analysis uses kernel smoothing with additional bounding constraints to produce a smooth production possibilities frontier. \cite{ParmeterRacine} developed a framework to estimate SNFAs and permitted the imposition of additional monotonicity and concavity constraints. First, the authors use a Nadaraya-Watson estimator for kernel smoothing, defined as
+\begin{equation}
+	A(x, x_i) = \frac{K(x, x_i)}{\sum_{h=1}^N K(x, x_h)},
+\end{equation}
+where $K$ is a generalized product kernel and observations of the independent variable $x$ are indexed with subscripts. This paper uses a multivariate normal kernel for $K$; that is,
+\begin{equation}
+	K(x, x_h) = \exp\left(-\frac12 (x - x_h)'H^{-1}(x - x_h)\right),
+\end{equation}
+where $H$ is a positive-definite bandwidth matrix chosen by the researcher. There are a number of methods that can be used to choose or select $H$, and bandwidth selection is outside of the scope of this research. Instead, this paper uses the rule-of-thumb
+\begin{align}
+	\nonumber
+	H_{jj}^{1/2} = \left(\frac{4}{M + 2}\right)^{1 / (M + 4)}\\\nonumber\times N^{-1 / (M + 4)}\times \mbox{sd}(x^j) &\mbox{\ \ \ \ for }j=1,...,M\\
+	\nonumber
+	H_{ab} = 0 &\mbox{\ \ \ \ for }a\neq b, 
+\end{align}
+where $\mbox{sd}(x^j)$ is the sample standard deviation of input $j$ and $N$ is the total number of observations used in estimation \citep{Silverman}. Then, the kernel smoothing estimate of $y$ can be written as
+\begin{equation}
+	\label{eqn:kernelEstimate}
+	\hat{y} = m(x) = \sum_{i=1}^N p_i A(x, x_i) y_i,
+\end{equation}
+where $y_i$ is the observed output of firm $i$ and $p_i$ are weights selected by the estimation procedure.\footnote{In standard kernel smoothing, $p = \mathbf{1}$.}
+
+It is well-known that kernel smoothing methods can suffer from bias near boundaries of the data due to asymmetric weighting \citep{Silverman}. This effect may be amplified in SNFA models because of the additional constraints placed on the fitted curve. There are a number of boundary correction methods available to reduce this bias, and this research utilizes the reflection method. 
+
+Optimal weights for \cref{eqn:kernelEstimate} can be found by solving the quadratic programming problem
+\begin{equation}
+	\min_p \mbox{\ \ }-\mathbf{1}'p + \frac12 p'p.
+\end{equation}
+Additional constraints can then be imposed to ensure the kernel smoothing estimates envelop the data. Specifically, the following bounding constraints are imposed:
+\begin{equation}
+	m(x_i) - y_i = \sum_{h=1}^N p_h A(x_i, x_h) y_h - y_i \geq 0 \mbox{\ \ \ \ }\forall i.
+\end{equation}
+Constrained quadratic programming problems such as the one above can be solved with many software packages. This research utilizes the \texttt{quadprog} package in the R programming language to solve these problems \citep{quadprog}.
+
+\cite{ParmeterRacine} also describe constraints that can be imposed if the researcher assumes the frontier is monotonically increasing and/or concave. The authors suggest enforcing monotonicity by imposing
+\begin{equation}
+	\label{eqn:ParmeterRacineMonotonicity}
+	\nabla_x m(x)\cdot \mathbf{1} = \sum_{h=1}^N p_h \left(\nabla_x A(x, x_h)\cdot \mathbf{1}\right)y_h \geq 0 \mbox{\ \ \ \ }\forall x.
+\end{equation}
+In this expression, $\nabla_x m(x_i)$ is the gradient of $m$ evaluated at $x_i$; that is,
+\begin{equation}
+	\nabla_x m(x) = \left(\frac{\partial m(x)}{\partial x^1}, \frac{\partial m(x)}{\partial x^2}, ..., \frac{\partial m(x)}{\partial x^M}\right)'.
+\end{equation}
+However, the constraint in \cref{eqn:ParmeterRacineMonotonicity} only states that the sum of partial derivatives need be non-negative, which could result in estimates of individual marginal productivities that are negative. This research instead assumes all marginal productivities are non-negative; that is,
+\begin{equation}
+	\label{eqn:monotonicity}
+	\frac{\partial m(x)}{\partial x^j} = \sum_{h=1}^N p_h \frac{\partial A(x, x_h)}{\partial x^j} y_h \geq 0 \mbox{\ \ \ \ }\forall x, j.
+\end{equation}
+Further, since concavity constraints expressed by in terms of second derivatives can produce quadratic programming problems that are computationally infeasible for large numbers of inputs, the authors use conditions for concavity given by \cite{Afriat}, expressed as
+\begin{equation}
+	\label{eqn:concavity}
+	m(x) - m(z) \leq \nabla_x m(z) \cdot (x - z) \mbox{\ \ \ \ }\forall x, z.
+\end{equation}
+
+Note that \cref{eqn:monotonicity} and \cref{eqn:concavity} must hold for each point $x$ and $z$ in the domain for monotonicity and concavity to hold globally. In practice, however, it is not possible to impose these constraints over the entire domain. Fortunately, it is often sufficient to impose the constraints at a fixed number of points (possibly more than those used to fit the frontier). For this reason, the analysis in this paper imposes constraints at additional points, described in detail in the following section.
+
+Finally, marginal productivities of inputs at a point $x$ are given by
+\begin{equation}
+	\nabla_x m(x) = \sum_{i=1}^N \hat{p}_i \nabla_x A(x, x_i) y_i,
+\end{equation}
+where $\hat{p}_i$ are estimated weights.
+
+\begin{figure}
+	\img{R/snfa-plot.pdf}
+	\caption{SNFA Model Estimates}
+	\label{fig:SNFA-plot}
+\end{figure}
+
+SNFA was run on the same data used in \cref{fig:DEA-plot}, and results are plotted in \cref{fig:SNFA-plot}. Three separate specifications were used: An unconstrained model (``U''), a model that assumes the frontier is monotonically increasing (``M''), and a model that assumes the frontier is both monotonically increasing and concave (``MC''). The marginal input productivity is also plotted for each of the three specifications in \cref{fig:SNFA-grad-plot}.
+
+\begin{figure}
+	\img{R/snfa-grad-plot.pdf}
+	\caption{SNFA Slope Estimates}
+	\label{fig:SNFA-grad-plot}
+\end{figure}
+
+As can be seen in \cref{fig:SNFA-grad-plot}, the slope of the frontier is well-defined at each point, unlike with the DEA model. Further, the slope of the frontier with monotonicity constraints is non-negative, and the slope of the frontier with monotonicity and concavity constraints is non-negative and (weakly) decreasing, as desired. As in DEA analysis, the efficiency of each data point can be calculated, so analysis similar to that conducted by \cite{Fare} can also be performed using SNFA analysis.
+
+Though the analysis in this section was performed on bivariate data, it can be extended to include multiple inputs.\footnote{It is also possible to extend SNFA analysis to multiple outputs.} Since marginal productivities are defined and easily calculable for SNFA models, they can be used to assess allocative inefficiency (as well as technical inefficiency) in a non-parametric data envelopment framework. The following section describes an empirical SNFA analysis for estimating allocative inefficiency.
+
+\section{Empirical Model}
+
+The allocative inefficiency model presented in this section closely resembles that in \cite{LovellSchmidt}, with additional considerations given to address the non-parametric estimation of the production frontier. Begin by considering the set of production possibilities in year $t$, denoted
+\begin{equation}
+	S_t = \{(x, y)|x\mbox{ can produce }y\mbox{ in year }t\}.
+\end{equation}
+Note that the production possibilities set can change over time due to technical progress. If $S_t$ is a closed set, the production possibilities frontier in year $t$ can be expressed as
+\begin{equation}
+	P_t = \{(x, y)\in S_t|\not\exists\mbox{ } \theta\in(0, 1)\mbox{ s.t. } (x, y/\theta)\in S_t\}.
+\end{equation}
+Then, there exists a production possibilities function $f_t$ that satisfies
+\begin{equation}
+	p_t(x) = y \mbox{ if and only if } (x, y)\in P_t.
+\end{equation}
+I assume that $p_t$ is a continuous function that can be estimated with kernel smoothing methods. Note that $p_t$ may exhibit other properties such as monotonicity or concavity.
+
+Next, consider the observed input and output data for firms $i$ in year $t$, denoted $\{(x_{it}, y_{it})\}_{i=1}^N$. Assume that there is a production function for firm $i$ in year $t$ such that
+\begin{equation}
+	f_{it}(x_{it}) = y_{it}.
+\end{equation}
+I assume that firms' production functions are differentiated by a multiplicative efficiency factor $\phi_{it}$, so that
+\begin{equation}
+	\label{eqn:possprod}
+	p_t(x_{it}) = f_{it}(x_{it}) / \phi_{it}.
+\end{equation}
+From this relation we can also define the efficiency function
+\begin{equation}
+	\phi_{it}(x_{is}, y_{is}) = \frac{f_{is}(x_{is})}{p_t(x_{is})} = \frac{y_{is}}{p_t(x_{is})}.
+\end{equation}
+From the definition of the production possibilities function, we know that $\phi_{it}(x_{it}, y_{it})\in(0, 1]$.\footnote{Note that $\phi_{it}(x_{is}, y_{is})$ may exceed 1 when $s\neq t$ due to shifts in the frontier over time.}
+
+Now denote the price of output for firm $i$ in year $t$ as $p_{it}$ and the per unit cost of input $j$ for firm $i$ in year $t$ as $w_{it}^j$. Then, a profit maximizing firm will allocate inputs so that
+\begin{equation}
+	\label{eqn:effalloc}
+	\frac{\partial f_{it}(x_{it})}{\partial x^j} = \frac{w_{it}^j}{p_{it}}.
+\end{equation}
+Using \cref{eqn:possprod}, the left-hand side of this equation can be written as
+\begin{equation}
+	\frac{\partial f_{it}(x_{it})}{\partial x^j} = \phi_{it}\frac{\partial p_t(x_{it})}{\partial x^j},
+\end{equation}
+which is easily calculable since the slope of the production possibilities function is a result of SNFA analysis. Further, since input and output prices are observable, the validity of \cref{eqn:effalloc} can be evaluated.
+
+In practice, \cref{eqn:effalloc} will never be exactly true and may not even be true in expectation, as in the case of systematic misallocation of inputs. To test for misallocation, consider the model
+\begin{equation}
+	\label{eqn:firmeffects}
+	\left(\phi_{it}\frac{\partial p_t(x_{it})}{\partial x^j}\right) \bigg/ \left(\frac{w_{it}^j}{p_{it}}\right) = \exp(\alpha_i^j + \ep_{it}^j),
+\end{equation}
+where $\ep_{it}^j$ is a mean-zero normally distributed error. Using a log transformation, this model is equivalent to
+\begin{equation}
+	\log\left(\phi_{it}\frac{\partial p_t(x_{it})}{\partial x^j}\right) - \log\left(\frac{w_{it}^j}{p_{it}}\right) = \alpha_i^j + \ep_{it}^j.
+\end{equation}
+Under the assumption of a concave production function, $\alpha_i^j>0$ unambiguously indicates systematic underallocation of input $j$ by firm $i$ and a sub-optimal realization of profit. Without the assumption of concavity, $\alpha_i^j>0$ indicates profit can be increased using a greater quantity of $x^j$, but not necessarily that doing so would bring the firm closer to the globally optimal allocation.\footnote{This characteristic is a result of the possibility that multiple production plans can satisfy first-order conditions for profit maximization when production functions are not necessarily concave.} This research will also investigate the following alternative specification
+\begin{equation}
+	\label{eqn:timeeffects}
+	\log\left(\phi_{it}\frac{\partial p_t(x_{it})}{\partial x^j}\right) - \log\left(\frac{w_{it}^j}{p_{it}}\right) = \alpha_t^j + \ep_{it}^j,
+\end{equation}
+where $\alpha_t^j$ measures systematic underallocation of input $j$ by all firms in year $t$.
+
+Both \cref{eqn:firmeffects} and \cref{eqn:timeeffects} represent a system of $M$ equations, one for each input. Since each equation contains the same set of independent variables, the systems can be estimated via equation-by-equation OLS. Further, cross-equation correlations can be computed from error terms, which are of interest since they can reveal whether misallocation of one input is correlated with misallocations of other inputs.
+
+\section{Data}
+
+The previously described empirical analysis is applied to Class I freight railroads in the United States. This analysis considers the period of time after effects of the industry's partial deregulation had largely been realized. In 1980, there were 40 Class I railroads in operation; by 1999, mostly as a result of mergers and consolidation, there were just seven, as there are today. The output of freight railroads is measured by revenue-ton-miles, defined as one ton of product shipped one mile that generates revenue for the railroad. 
+
+\bibliographystyle{chicago}
+\bibliography{snfa}
+
+\end{document}

@@ -1,0 +1,70 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Afriat}{Afriat}{1967}]{Afriat}
+Afriat, S.~N. (1967).
+\newblock The construction of utility functions from expenditure data.
+\newblock {\em International economic review\/}~{\em 8\/}(1), 67--77.
+
+\bibitem[\protect\citeauthoryear{Aigner, Lovell, and Schmidt}{Aigner
+  et~al.}{1977}]{AignerLovellSchmidt}
+Aigner, D., C.~K. Lovell, and P.~Schmidt (1977).
+\newblock Formulation and estimation of stochastic frontier production function
+  models.
+\newblock {\em Journal of econometrics\/}~{\em 6\/}(1), 21--37.
+
+\bibitem[\protect\citeauthoryear{Averch and Johnson}{Averch and
+  Johnson}{1962}]{AverchJohnson}
+Averch, H. and L.~L. Johnson (1962).
+\newblock Behavior of the firm under regulatory constraint.
+\newblock {\em The American Economic Review\/}~{\em 52\/}(5), 1052--1069.
+
+\bibitem[\protect\citeauthoryear{F{\"a}re, Grosskopf, Logan, and
+  Lovell}{F{\"a}re et~al.}{1985}]{Fare1985}
+F{\"a}re, R., S.~Grosskopf, J.~Logan, and C.~K. Lovell (1985).
+\newblock Measuring efficiency in production: with an application to electric
+  utilities.
+\newblock In {\em Managerial issues in productivity analysis}, pp.\  185--214.
+  Springer.
+
+\bibitem[\protect\citeauthoryear{F{\"a}re, Grosskopf, and Norris}{F{\"a}re
+  et~al.}{1997}]{Fare}
+F{\"a}re, R., S.~Grosskopf, and M.~Norris (1997).
+\newblock Productivity growth, technical progress, and efficiency change in
+  industrialized countries: reply.
+\newblock {\em The American Economic Review\/}~{\em 87\/}(5), 1040--1044.
+
+\bibitem[\protect\citeauthoryear{Farrell}{Farrell}{1957}]{Farrell}
+Farrell, M.~J. (1957).
+\newblock The measurement of productive efficiency.
+\newblock {\em Journal of the Royal Statistical Society. Series A
+  (General)\/}~{\em 120\/}(3), 253--290.
+
+\bibitem[\protect\citeauthoryear{Racine, Parmeter, and Du}{Racine
+  et~al.}{2009}]{ParmeterRacine}
+Racine, J.~S., C.~F. Parmeter, and P.~Du (2009).
+\newblock Constrained nonparametric kernel regression: Estimation and
+  inference.
+\newblock In {\em Working paper}.
+
+\bibitem[\protect\citeauthoryear{Schmidt and Lovell}{Schmidt and
+  Lovell}{1979}]{LovellSchmidt}
+Schmidt, P. and C.~K. Lovell (1979).
+\newblock Estimating technical and allocative inefficiency relative to
+  stochastic production and cost frontiers.
+\newblock {\em Journal of econometrics\/}~{\em 9\/}(3), 343--366.
+
+\bibitem[\protect\citeauthoryear{Shepherd}{Shepherd}{2015}]{Shepherd}
+Shepherd, R.~W. (2015).
+\newblock {\em Theory of cost and production functions}.
+\newblock Princeton University Press.
+
+\bibitem[\protect\citeauthoryear{Silverman}{Silverman}{1986}]{Silverman}
+Silverman, B.~W. (1986).
+\newblock {\em Density estimation for statistics and data analysis}, Volume~26.
+\newblock CRC press.
+
+\bibitem[\protect\citeauthoryear{Weingessel}{Weingessel}{2013}]{quadprog}
+Weingessel, A. (2013).
+\newblock {\em quadprog: Functions to solve Quadratic Programming Problems.}
+
+\end{thebibliography}
